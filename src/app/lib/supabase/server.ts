@@ -1,34 +1,42 @@
-import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
+
+function getSupabaseUrl() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL");
+  return url;
+}
+
+function getSupabaseKey() {
+  // Supabase tem usado “publishable key” em docs recentes; mantemos fallback p/ ANON_KEY
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!key) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)"
+    );
+  }
+  return key;
+}
 
 export async function supabaseServer() {
   const cookieStore = await cookies();
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // fallback p/ seu projeto atual
-
-  if (!url || !key) {
-    throw new Error(
-      "Supabase env faltando: defina NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (ou NEXT_PUBLIC_SUPABASE_ANON_KEY)."
-    );
-  }
-
-  return createServerClient(url, key, {
+  return createServerClient(getSupabaseUrl(), getSupabaseKey(), {
     cookies: {
       getAll() {
         return cookieStore.getAll();
       },
       setAll(cookiesToSet) {
+        // Em alguns contextos o cookie store pode ser read-only; então protegemos.
         try {
           cookiesToSet.forEach(({ name, value, options }) => {
-            // Em Server Component pode ser read-only; em Route Handler/Server Action funciona.
-            (cookieStore as any).set(name, value, options);
+            cookieStore.set({ name, value, ...options });
           });
         } catch {
-          // OK ignorar quando chamado a partir de Server Component,
-          // desde que você use proxy para refresh de sessão depois.
+          // ignore
         }
       },
     },
