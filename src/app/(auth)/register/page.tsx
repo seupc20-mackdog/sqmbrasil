@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 export default function RegisterPage({
   searchParams,
 }: {
-  searchParams?: { error?: string };
+  searchParams?: { error?: string; ok?: string };
 }) {
   async function signUp(formData: FormData): Promise<void> {
     "use server";
@@ -13,43 +13,31 @@ export default function RegisterPage({
     const email = String(formData.get("email") || "").trim();
     const password = String(formData.get("password") || "").trim();
 
-    if (!username || !email || !password) {
-      redirect("/register?error=1");
-    }
+    if (!username || !email || password.length < 6) redirect("/register?error=1");
 
     const supabase = await supabaseServer();
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { username },
+        data: { username }, // fica no metadata do usuário
       },
     });
 
-    if (error) {
-      redirect("/register?error=1");
-    }
+    if (error) redirect("/register?error=1");
 
-    // Se o seu schema usa tabela profiles, você pode criar/atualizar aqui (opcional):
-    // Obs: isso só funciona se sua RLS permitir insert/update para o próprio usuário.
-    const userId = data.user?.id;
-    if (userId) {
-      await supabase.from("profiles").upsert({
-        id: userId,
-        username,
-      });
-    }
-
-    // Se email confirmation estiver ligado, o usuário vai precisar confirmar email antes de logar.
     redirect("/login?registered=1");
   }
 
   const hasError = searchParams?.error === "1";
 
   return (
-    <main className="mx-auto max-w-md p-6 text-white">
-      <h2 className="text-xl font-semibold">Criar conta</h2>
+    <main>
+      <h1 className="text-xl font-semibold">Criar conta</h1>
+      <p className="mt-1 text-sm text-zinc-300">
+        Cadastre-se para curtir, comentar e participar da comunidade.
+      </p>
 
       {hasError ? (
         <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
@@ -74,9 +62,10 @@ export default function RegisterPage({
         <input
           name="password"
           type="password"
-          placeholder="Senha"
+          placeholder="Senha (mín. 6)"
           className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
           required
+          minLength={6}
         />
 
         <button className="mt-2 rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400">
