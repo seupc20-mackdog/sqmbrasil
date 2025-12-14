@@ -1,7 +1,8 @@
 import { supabaseServer } from "@/lib/supabase/server";
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
+
 
   const { data: product, error } = await supabase
     .from("products")

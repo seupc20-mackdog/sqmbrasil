@@ -9,7 +9,8 @@ export async function createCommunityPost(formData: FormData) {
 
   if (!title) return { ok: false, message: "Título obrigatório." };
 
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
+
   const { data: userData } = await supabase.auth.getUser();
   const user = userData.user;
   if (!user) return { ok: false, message: "Não autenticado." };

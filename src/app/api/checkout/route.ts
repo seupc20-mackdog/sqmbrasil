@@ -5,7 +5,8 @@ import { supabaseServer } from "@/lib/supabase/server";
 type Body = { items: { productId: string; qty: number }[] };
 
 export async function POST(req: Request) {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
+
 
   // opcional: exigir login para checkout
   const { data: userData } = await supabase.auth.getUser();
