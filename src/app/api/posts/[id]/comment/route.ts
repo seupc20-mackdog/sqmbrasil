@@ -1,24 +1,48 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-  const supabase = supabaseServer();
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
+export const runtime = "nodejs";
 
-  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+type Body = {
+  content?: string;
+  parent_id?: string | null;
+};
 
-  const { content, parent_id } = await req.json().catch(() => ({ content: "", parent_id: null }));
-  const c = String(content || "").trim();
-  if (!c) return NextResponse.json({ error: "empty" }, { status: 400 });
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id: postId } = await context.params;
 
-  const { error } = await supabase.from("comments").insert({
-    post_id: params.id,
-    author_id: user.id,
-    parent_id: parent_id || null,
-    content: c,
+  const supabase = await supabaseServer();
+
+  const { data: auth, error: authErr } = await supabase.auth.getUser();
+  if (authErr || !auth.user) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  let body: Body = {};
+  try {
+    body = (await request.json()) as Body;
+  } catch {
+    return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
+  }
+
+  const content = String(body.content ?? "").trim();
+  if (!content) {
+    return NextResponse.json({ error: "Comentário vazio" }, { status: 400 });
+  }
+
+  const { error: insErr } = await supabase.from("comments").insert({
+    post_id: postId,
+    author_id: auth.user.id,
+    content,
+    parent_id: body.parent_id ?? null,
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (insErr) {
+    return NextResponse.json({ error: insErr.message }, { status: 400 });
+  }
+
   return NextResponse.json({ ok: true });
 }

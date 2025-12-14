@@ -1,29 +1,56 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 
-export async function POST(_: Request, { params }: { params: { id: string } }) {
-  const supabase = supabaseServer();
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
+export const runtime = "nodejs";
 
-  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id: postId } = await context.params;
 
-  const postId = params.id;
+  const supabase = await supabaseServer();
 
-  const { data: existing } = await supabase
+  const { data: auth, error: authErr } = await supabase.auth.getUser();
+  if (authErr || !auth.user) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  const userId = auth.user.id;
+
+  // Toggle: se já existe like, remove; senão insere
+  const { data: existing, error: selErr } = await supabase
     .from("post_likes")
-    .select("post_id,user_id")
+    .select("post_id")
     .eq("post_id", postId)
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .maybeSingle();
 
-  if (existing) {
-    const { error } = await supabase.from("post_likes").delete().eq("post_id", postId).eq("user_id", user.id);
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
-    return NextResponse.json({ ok: true, liked: false });
-  } else {
-    const { error } = await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
-    return NextResponse.json({ ok: true, liked: true });
+  if (selErr) {
+    return NextResponse.json({ error: selErr.message }, { status: 400 });
   }
+
+  if (existing) {
+    const { error: delErr } = await supabase
+      .from("post_likes")
+      .delete()
+      .eq("post_id", postId)
+      .eq("user_id", userId);
+
+    if (delErr) {
+      return NextResponse.json({ error: delErr.message }, { status: 400 });
+    }
+
+    return NextResponse.json({ ok: true, liked: false });
+  }
+
+  const { error: insErr } = await supabase
+    .from("post_likes")
+    .insert({ post_id: postId, user_id: userId });
+
+  if (insErr) {
+    return NextResponse.json({ error: insErr.message }, { status: 400 });
+  }
+
+  return NextResponse.json({ ok: true, liked: true });
 }
