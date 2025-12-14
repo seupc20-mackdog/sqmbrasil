@@ -18,7 +18,8 @@ export async function POST(req: Request) {
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeKey) return NextResponse.json({ error: "Configure STRIPE_SECRET_KEY (ou substitua por Mercado Pago)." }, { status: 501 });
 
-  const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
+  const stripe = new Stripe(stripeKey, { apiVersion: "2025-11-17.clover" })
+;
 
   // Busca produtos no Supabase (preço do servidor = fonte de verdade)
   const productIds = body.items.map((x) => x.productId);
