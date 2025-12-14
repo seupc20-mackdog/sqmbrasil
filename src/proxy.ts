@@ -2,26 +2,34 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PROTECTED_PREFIXES = ["/feed", "/new"];
+const PROTECTED = ["/feed", "/new"];
 
-function getSupabaseUrl() {
+function supabaseUrl() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!url) throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL");
   return url;
 }
 
-function getSupabaseKey() {
-  return (
+function supabaseAnon() {
+  const key =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    ""
-  );
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!key) throw new Error("Missing NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  return key;
 }
 
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request: { headers: request.headers } });
+  const path = request.nextUrl.pathname;
 
-  const supabase = createServerClient(getSupabaseUrl(), getSupabaseKey(), {
+  // Sempre marca que o proxy rodou (para você checar no DevTools)
+  const response = NextResponse.next();
+  response.headers.set("x-sqm-proxy", "1");
+
+  const isProtected = PROTECTED.some((p) => path === p || path.startsWith(p + "/"));
+  if (!isProtected) return response;
+
+  const supabase = createServerClient(supabaseUrl(), supabaseAnon(), {
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -34,14 +42,9 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // força refresh/validação quando necessário
   const { data } = await supabase.auth.getUser();
-  const user = data?.user ?? null;
 
-  const path = request.nextUrl.pathname;
-  const isProtected = PROTECTED_PREFIXES.some((p) => path === p || path.startsWith(p + "/"));
-
-  if (!user && isProtected) {
+  if (!data.user) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", path);
     return NextResponse.redirect(loginUrl);
@@ -50,7 +53,6 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
-// Evita rodar em assets estáticos
 export const config = {
-  matcher: ["/((?!_next/|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: ["/feed/:path*", "/new/:path*"],
 };
