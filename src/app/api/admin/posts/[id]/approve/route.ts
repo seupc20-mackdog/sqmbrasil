@@ -1,18 +1,52 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 
-export async function POST(_: Request, { params }: { params: { id: string } }) {
-  const supabase = supabaseServer();
+export const runtime = "nodejs";
 
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
-  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
 
-  const { data: prof } = await supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle();
-  if (!prof?.is_admin) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    const supabase = await supabaseServer();
 
-  const { error } = await supabase.from("posts").update({ is_approved: true }).eq("id", params.id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    // precisa estar logado
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) {
+      return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+    }
 
-  return NextResponse.json({ ok: true });
+    // checa admin no profile
+    const { data: profile, error: pErr } = await supabase
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", auth.user.id)
+      .maybeSingle();
+
+    if (pErr) {
+      return NextResponse.json({ error: pErr.message }, { status: 400 });
+    }
+    if (!profile?.is_admin) {
+      return NextResponse.json({ error: "Sem permissão" }, { status: 403 });
+    }
+
+    // aprova post
+    const { error } = await supabase
+      .from("posts")
+      .update({ is_approved: true })
+      .eq("id", id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (e: any) {
+    return NextResponse.json(
+      { error: e?.message || "Erro inesperado" },
+      { status: 500 }
+    );
+  }
 }
