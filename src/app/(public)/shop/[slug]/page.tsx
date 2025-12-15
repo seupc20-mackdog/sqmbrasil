@@ -15,8 +15,8 @@ const DEMO_PRODUCTS: Product[] = [
   {
     id: "demo-1",
     slug: "spray-nasal-hipoalergenico",
-    name: "Spray nasal hipoalergênico",
-    description: "Ajuda no conforto respiratório diário (demo).",
+    name: "Spray nasal hipoalergenico",
+    description: "Ajuda no conforto respiratorio diario (demo).",
     price_cents: 3990,
     image_url: null,
   },
@@ -24,15 +24,15 @@ const DEMO_PRODUCTS: Product[] = [
     id: "demo-2",
     slug: "vitamina-d3-k2",
     name: "Vitamina D3 + K2",
-    description: "Suporte básico para rotina de suplementação (demo).",
+    description: "Suporte basico para rotina de suplementacao (demo).",
     price_cents: 5890,
     image_url: null,
   },
   {
     id: "demo-3",
     slug: "probiotico-sensivel",
-    name: "Probiótico para sensíveis",
-    description: "Fórmula pensada para rotinas mais delicadas (demo).",
+    name: "Probiotico para sensiveis",
+    description: "Formula pensada para rotinas mais delicadas (demo).",
     price_cents: 7990,
     image_url: null,
   },
@@ -47,34 +47,42 @@ function formatBRL(cents: number) {
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   const supabase = await supabaseServer();
 
-  const { data, error } = await supabase
-    .from("products")
-    .select("id,slug,name,description,price_cents,image_url")
-    .eq("slug", slug)
-    .maybeSingle();
+  let product: Product | null = null;
+  let loadError: string | null = null;
 
-  const product =
-    (!error && data ? (data as Product) : null) ??
-    DEMO_PRODUCTS.find((p) => p.slug === slug) ??
-    null;
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id,slug,name,description,price_cents,image_url")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error) {
+      loadError = error.message;
+    } else if (data) {
+      product = data as Product;
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    loadError = message.includes('relationship between "products" and "product_images"')
+      ? "Relacionamento product_images indisponivel; usando produto demo."
+      : message;
+  }
+
+  if (!product) {
+    product = DEMO_PRODUCTS.find((p) => p.slug === slug) ?? null;
+  }
 
   if (!product) return notFound();
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
-      <Link
-        href="/shop"
-        className="text-sm text-zinc-300 hover:text-zinc-100"
-      >
+      <Link href="/shop" className="text-sm text-zinc-300 hover:text-zinc-100">
         ← Voltar para a loja
       </Link>
 
@@ -101,21 +109,17 @@ export default async function ProductPage({
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          {error ? (
+          {loadError ? (
             <p className="mb-3 text-xs text-amber-300">
-              Aviso: Supabase retornou erro. Exibindo produto demo (se existir).
+              Aviso: {loadError} Exibindo produto demo (se existir).
             </p>
           ) : null}
 
           <h1 className="text-2xl font-semibold">{product.name}</h1>
-          <p className="mt-2 text-sm text-zinc-300">
-            {product.description || "Sem descrição por enquanto."}
-          </p>
+          <p className="mt-2 text-sm text-zinc-300">{product.description || "Sem descricao por enquanto."}</p>
 
           <div className="mt-6 flex items-center justify-between gap-4">
-            <div className="text-xl font-semibold">
-              {formatBRL(product.price_cents)}
-            </div>
+            <div className="text-xl font-semibold">{formatBRL(product.price_cents)}</div>
 
             <Link
               href="/cart"
@@ -126,7 +130,7 @@ export default async function ProductPage({
           </div>
 
           <p className="mt-3 text-xs text-zinc-400">
-            (Próximo passo: botão “Adicionar ao carrinho” + checkout real.)
+            (Proximo passo: botao "Adicionar ao carrinho" + checkout real.)
           </p>
         </div>
       </div>

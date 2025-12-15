@@ -3,12 +3,13 @@ import { redirect } from "next/navigation";
 
 function safeNextPath(input: string | null): string {
   if (!input) return "/feed";
-  // Evita open-redirect: só permite paths relativos do app
   if (!input.startsWith("/")) return "/feed";
   if (input.startsWith("//")) return "/feed";
   if (input.includes("://")) return "/feed";
   return input;
 }
+
+export const dynamic = "force-dynamic";
 
 export default function LoginPage({
   searchParams,
@@ -49,19 +50,19 @@ export default function LoginPage({
 
       {registered ? (
         <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-200">
-          Conta criada. Agora faça login.
+          Conta criada. Agora faca login.
         </div>
       ) : null}
 
       {loggedOut ? (
         <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-zinc-200">
-          Você saiu da conta.
+          Voce saiu da conta.
         </div>
       ) : null}
 
       {hasError ? (
         <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
-          Email ou senha inválidos (ou sua conta ainda não foi confirmada por email, se a confirmação estiver ligada).
+          Email ou senha invalidos (ou sua conta ainda nao foi confirmada por email, se a confirmacao estiver ligada).
         </div>
       ) : null}
 
@@ -89,7 +90,7 @@ export default function LoginPage({
       </form>
 
       <p className="mt-4 text-sm text-zinc-300">
-        Não tem conta?{" "}
+        Nao tem conta?{" "}
         <a className="text-emerald-300 hover:underline" href="/register">
           Criar conta
         </a>

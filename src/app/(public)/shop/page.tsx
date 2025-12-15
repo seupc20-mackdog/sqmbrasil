@@ -15,8 +15,8 @@ const DEMO_PRODUCTS: Product[] = [
   {
     id: "demo-1",
     slug: "spray-nasal-hipoalergenico",
-    name: "Spray nasal hipoalergênico",
-    description: "Ajuda no conforto respiratório diário (demo).",
+    name: "Spray nasal hipoalergenico",
+    description: "Ajuda no conforto respiratorio diario (demo).",
     price_cents: 3990,
     image_url: null,
   },
@@ -24,15 +24,15 @@ const DEMO_PRODUCTS: Product[] = [
     id: "demo-2",
     slug: "vitamina-d3-k2",
     name: "Vitamina D3 + K2",
-    description: "Suporte básico para rotina de suplementação (demo).",
+    description: "Suporte basico para rotina de suplementacao (demo).",
     price_cents: 5890,
     image_url: null,
   },
   {
     id: "demo-3",
     slug: "probiotico-sensivel",
-    name: "Probiótico para sensíveis",
-    description: "Fórmula pensada para rotinas mais delicadas (demo).",
+    name: "Probiotico para sensiveis",
+    description: "Formula pensada para rotinas mais delicadas (demo).",
     price_cents: 7990,
     image_url: null,
   },
@@ -43,12 +43,25 @@ export const dynamic = "force-dynamic";
 export default async function ShopPage() {
   const supabase = await supabaseServer();
 
-  const { data, error } = await supabase
-    .from("products")
-    .select("id,slug,name,description,price_cents,image_url");
+  let products: Product[] = DEMO_PRODUCTS;
+  let loadError: string | null = null;
 
-  const products: Product[] =
-    !error && data && data.length ? (data as Product[]) : DEMO_PRODUCTS;
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id,slug,name,description,price_cents,image_url");
+
+    if (error) {
+      loadError = error.message;
+    } else if (data && data.length) {
+      products = data as Product[];
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    loadError = message.includes('relationship between "products" and "product_images"')
+      ? "Relacionamento product_images indisponivel; usando catalogo demo."
+      : message;
+  }
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
@@ -56,11 +69,11 @@ export default async function ShopPage() {
         <div>
           <h1 className="text-2xl font-semibold">Loja</h1>
           <p className="mt-1 text-sm text-zinc-300">
-            Catálogo MVP (usando Supabase quando houver produtos; senão, demo).
+            Catalogo MVP (usando Supabase quando houver produtos; senao, demo).
           </p>
-          {error ? (
+          {loadError ? (
             <p className="mt-2 text-xs text-amber-300">
-              Aviso: Supabase retornou erro no catálogo. Exibindo produtos demo.
+              Aviso: {loadError} Exibindo produtos demo.
             </p>
           ) : null}
         </div>
