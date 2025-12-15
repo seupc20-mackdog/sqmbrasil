@@ -1,75 +1,63 @@
-import Link from "next/link";
-
-type Product = {
-  id: string;
-  slug: string;
-  name: string;
-  description: string | null;
-  price_cents: number;
-  image_url: string | null;
+type PostAuthor = {
+  username: string | null;
+  avatar_url: string | null;
 };
 
-function formatBRL(cents: number) {
-  return (cents / 100).toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
+type Post = {
+  id: string;
+  type: "official" | "community";
+  title: string;
+  summary: string | null;
+  created_at: string;
+  author?: PostAuthor | null;
+};
+
+function formatDate(value: string) {
+  try {
+    return new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(new Date(value));
+  } catch {
+    return null;
+  }
 }
 
-const FALLBACK_IMG =
-  "data:image/svg+xml;utf8," +
-  encodeURIComponent(`
-  <svg xmlns="http://www.w3.org/2000/svg" width="900" height="700">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#0b0b0b"/>
-        <stop offset="1" stop-color="#111827"/>
-      </linearGradient>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#g)"/>
-    <rect x="40" y="40" width="820" height="620" rx="28" ry="28" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#a1a1aa" font-family="Arial" font-size="28">
-      SQM Brasil — Produto
-    </text>
-  </svg>
-`);
-
-export function ProductCard({ product }: { product: Product }) {
-  const price = formatBRL(product.price_cents);
+export function PostCard({ post }: { post: Post }) {
+  const authorName = post.author?.username || "Anonimo";
+  const date = formatDate(post.created_at);
 
   return (
-    <Link
-      href={`/shop/${product.slug}`}
-      className="group rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/10"
-    >
-      <div className="aspect-[4/3] w-full overflow-hidden rounded-xl bg-black/30">
-        <img
-          src={product.image_url || FALLBACK_IMG}
-          alt={product.name}
-          className="h-full w-full object-cover transition group-hover:scale-[1.02]"
-          loading="lazy"
-        />
+    <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <div className="flex items-center justify-between gap-3">
+        <span
+          className="rounded-md bg-emerald-500/15 px-2 py-1 text-xs font-semibold text-emerald-300"
+          aria-label={post.type === "official" ? "Post oficial" : "Post da comunidade"}
+        >
+          {post.type === "official" ? "Oficial" : "Comunidade"}
+        </span>
+
+        {date ? <span className="text-xs text-zinc-400">{date}</span> : null}
       </div>
 
-      <div className="mt-4">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="text-base font-semibold leading-snug text-white">
-            {product.name}
-          </h3>
+      <h3 className="mt-3 text-lg font-semibold text-white">{post.title}</h3>
+      {post.summary ? <p className="mt-2 text-sm text-zinc-300">{post.summary}</p> : null}
 
-          <div className="shrink-0 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-sm font-semibold text-white">
-            {price}
+      <div className="mt-4 flex items-center gap-3">
+        {post.author?.avatar_url ? (
+          <img
+            src={post.author.avatar_url}
+            alt={authorName}
+            className="h-9 w-9 rounded-full border border-white/10 bg-white/5 object-cover"
+          />
+        ) : (
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold uppercase text-zinc-200">
+            {authorName.slice(0, 1)}
           </div>
-        </div>
+        )}
 
-        <p className="mt-2 line-clamp-2 text-sm text-zinc-300">
-          {product.description || "Ver detalhes do produto."}
-        </p>
-
-        <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-emerald-300">
-          Ver produto <span className="transition group-hover:translate-x-0.5">→</span>
+        <div className="leading-tight">
+          <div className="text-sm font-medium text-white">{authorName}</div>
+          <div className="text-xs text-zinc-400">Postado no feed</div>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }
