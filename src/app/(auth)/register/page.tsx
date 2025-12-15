@@ -58,7 +58,7 @@ export default function RegisterPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-pink)]">Cadastro</p>
         <h1 className="text-3xl font-semibold leading-tight">Criar conta</h1>
         <p className="text-sm text-[#5a647a]">
-          Cadastre-se para salvar preferencias e acompanhar o seu historico de apostas.
+          Cadastre-se para participar da comunidade, comentar, curtir e finalizar compras na loja.
         </p>
       </header>
 

@@ -49,7 +49,7 @@ function LoginForm() {
     });
 
     if (error) {
-      setError(error.message || "Nao foi possivel iniciar o login com Google.");
+      setError(error.message || "Não foi possível entrar com o Google. Tente novamente.");
       setOauthLoading(false);
     }
   };
@@ -71,7 +71,7 @@ function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError(error.message || "Email ou senha invalidos (ou conta nao confirmada).");
+      setError("Email ou senha inválidos. Tente novamente.");
       setLoading(false);
       return;
     }
@@ -83,22 +83,22 @@ function LoginForm() {
   return (
     <main className="space-y-6 text-[var(--nav-bg)]">
       <header className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-pink)]">Acesso seguro</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-pink)]">SQM Brasil</p>
         <h1 className="text-3xl font-semibold leading-tight">Entrar</h1>
         <p className="text-sm text-[#5a647a]">
-          Acesse sua conta para acompanhar apostas, limites e ofertas exclusivas.
+          Acesse publicações, comente, curta e salve conteúdos da comunidade. Finalize compras na loja e acompanhe seus pedidos.
         </p>
       </header>
 
       {registered ? (
         <div className="rounded-[12px] border border-[var(--check-teal)]/40 bg-[var(--soft-teal-bg)] px-4 py-3 text-sm text-[var(--nav-bg)] shadow-sm">
-          Conta criada. Agora faca login.
+          Conta criada. Agora faça login.
         </div>
       ) : null}
 
       {loggedOut ? (
         <div className="rounded-[12px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-sm text-[var(--nav-bg)] shadow-sm">
-          Voce saiu da conta.
+          Você saiu da conta.
         </div>
       ) : null}
 
@@ -110,7 +110,7 @@ function LoginForm() {
 
       {hasOauthError ? (
         <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-sm text-[#7a0d32] shadow-sm">
-          Falha no login social. Tente novamente.
+          Não foi possível entrar com o Google. Tente novamente.
         </div>
       ) : null}
 
@@ -138,7 +138,7 @@ function LoginForm() {
           <input
             name="email"
             type="email"
-            placeholder="seuemail@email.com"
+            placeholder="Seu email"
             className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
             required
           />
@@ -149,7 +149,7 @@ function LoginForm() {
           <input
             name="password"
             type="password"
-            placeholder="Digite sua senha"
+            placeholder="Sua senha"
             className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
             required
           />
@@ -160,13 +160,13 @@ function LoginForm() {
           disabled={loading}
           className="mt-2 inline-flex items-center justify-center rounded-[12px] bg-[var(--cta-teal)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-md transition hover:bg-[var(--cta-teal-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {loading ? "Entrando..." : "Entrar agora"}
+          {loading ? "Entrando..." : "Entrar"}
         </button>
       </form>
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
         <Link className="font-semibold text-[var(--link-blue)] hover:underline" href="/register">
-          Cadastre-se
+          Criar conta
         </Link>
         <Link className="font-semibold text-[var(--link-blue)] hover:underline" href="/forgot-password">
           Esqueci minha senha

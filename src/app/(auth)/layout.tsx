@@ -26,14 +26,14 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
               SQM
             </div>
             <div className="leading-tight">
-              <p className="text-sm font-semibold text-[var(--nav-bg)]">SQM Sportsbook</p>
-              <p className="text-xs text-[#5a647a]">Auth Sportsbook v1.0</p>
+              <p className="text-sm font-semibold text-[var(--nav-bg)]">SQM Brasil - Comunidade e Loja</p>
+              <p className="text-xs text-[#5a647a]">Entre para participar da comunidade e acessar a loja.</p>
             </div>
           </Link>
 
           <Link
             href="/"
-            aria-label="Fechar"
+            aria-label="Voltar para a página inicial"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--field-border)] text-[var(--nav-bg)] shadow-sm transition hover:bg-[var(--field-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)]"
           >
             &#10005;
@@ -47,38 +47,38 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
                 SQM
               </div>
               <div>
-                <div className="text-lg font-semibold">SQM Sportsbook</div>
-                <div className="text-sm text-[#a3b6d6]">Acesso seguro e rapido</div>
+                <div className="text-lg font-semibold">SQM Brasil - Comunidade e Loja</div>
+                <div className="text-sm text-[#a3b6d6]">Entre para participar da comunidade e acessar a loja.</div>
               </div>
             </Link>
 
             <div className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
-              Auth v1.0
+              Acesso seguro e rápido
             </div>
           </div>
 
           <div className="mt-16 space-y-6 text-white">
             <p className="text-3xl font-semibold leading-tight">
-              Acompanhe apostas e ofertas com seguranca e clareza.
+              Acesse publicações, comente, curta e salve conteúdos da comunidade. Finalize compras na loja com facilidade e acompanhe seus pedidos.
             </p>
             <ul className="space-y-4 text-sm text-[#d8e3f5]">
               <li className="flex items-start gap-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--check-teal)]" />
-                Login rapido com Google ou email para voltar aos seus tickets.
+                Login com Google ou email para entrar na sua conta.
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--check-teal)]" />
-                Protecao com tokens verificados e ambiente monitorado 24/7.
+                Sessão protegida com autenticação e cookies seguros.
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--check-teal)]" />
-                Experiencia otimizada para escritorio e mobile, pronta para apostar.
+                Experiência otimizada para desktop e mobile.
               </li>
             </ul>
           </div>
 
           <p className="mt-10 text-xs text-[#a3b6d6]">
-            Dica: mantenha seus acessos seguros e atualizados para nao perder os limites do dia.
+            Conteúdo informativo; não substitui orientação profissional.
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             </div>
 
             <p className="mt-6 text-center text-xs text-[#5f6677] md:text-start">
-              Ao continuar, voce concorda com as praticas de seguranca do ambiente Sportsbook.
+              Conteúdo informativo; não substitui orientação profissional.
             </p>
           </div>
         </div>
