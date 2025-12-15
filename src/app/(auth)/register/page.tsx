@@ -53,59 +53,73 @@ export default function RegisterPage() {
   };
 
   return (
-    <main>
-      <h1 className="text-xl font-semibold">Criar conta</h1>
-      <p className="mt-1 text-sm text-zinc-300">
-        Cadastre-se para curtir, comentar e participar da comunidade.
-      </p>
+    <main className="space-y-6 text-[var(--nav-bg)]">
+      <header className="space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-pink)]">Cadastro</p>
+        <h1 className="text-3xl font-semibold leading-tight">Criar conta</h1>
+        <p className="text-sm text-[#5a647a]">
+          Cadastre-se para salvar preferencias e acompanhar o seu historico de apostas.
+        </p>
+      </header>
 
       {error ? (
-        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+        <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-sm text-[#7a0d32] shadow-sm">
           {error}
         </div>
       ) : null}
 
       {message ? (
-        <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-200">
+        <div className="rounded-[12px] border border-[var(--check-teal)]/40 bg-[var(--soft-teal-bg)] px-4 py-3 text-sm text-[var(--nav-bg)] shadow-sm">
           {message}
         </div>
       ) : null}
 
-      <form onSubmit={onSubmit} className="mt-5 grid gap-3">
-        <input
-          name="username"
-          placeholder="Nome de usuario"
-          className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
-          required
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
-          required
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Senha (min. 6)"
-          className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
-          required
-          minLength={6}
-        />
+      <form onSubmit={onSubmit} className="grid gap-3">
+        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)]">
+          <span>Nome de usuario</span>
+          <input
+            name="username"
+            placeholder="nickname"
+            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
+            required
+          />
+        </label>
+
+        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)]">
+          <span>Email</span>
+          <input
+            name="email"
+            type="email"
+            placeholder="seuemail@email.com"
+            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
+            required
+          />
+        </label>
+
+        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)]">
+          <span>Senha</span>
+          <input
+            name="password"
+            type="password"
+            placeholder="Minimo 6 caracteres"
+            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
+            required
+            minLength={6}
+          />
+        </label>
 
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-2 inline-flex items-center justify-center rounded-[12px] bg-[var(--brand-pink)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-md transition hover:bg-[var(--brand-pink-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {loading ? "Criando..." : "Criar conta"}
         </button>
       </form>
 
-      <p className="mt-4 text-sm text-zinc-300">
+      <p className="text-sm">
         Ja tem conta?{" "}
-        <Link className="text-emerald-300 hover:underline" href="/login">
+        <Link className="font-semibold text-[var(--link-blue)] hover:underline" href="/login">
           Entrar
         </Link>
       </p>

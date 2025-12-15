@@ -16,7 +16,7 @@ function safeNextPath(input: string | null): string {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<main className="p-6 text-sm text-zinc-300">Carregando...</main>}>
+    <Suspense fallback={<main className="p-6 text-sm text-[#5a647a]">Carregando...</main>}>
       <LoginForm />
     </Suspense>
   );
@@ -81,76 +81,97 @@ function LoginForm() {
   };
 
   return (
-    <main>
-      <h1 className="text-xl font-semibold">Entrar</h1>
-      <p className="mt-1 text-sm text-zinc-300">Acesse sua conta para curtir, comentar e comprar na loja.</p>
+    <main className="space-y-6 text-[var(--nav-bg)]">
+      <header className="space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-pink)]">Acesso seguro</p>
+        <h1 className="text-3xl font-semibold leading-tight">Entrar</h1>
+        <p className="text-sm text-[#5a647a]">
+          Acesse sua conta para acompanhar apostas, limites e ofertas exclusivas.
+        </p>
+      </header>
 
       {registered ? (
-        <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-200">
+        <div className="rounded-[12px] border border-[var(--check-teal)]/40 bg-[var(--soft-teal-bg)] px-4 py-3 text-sm text-[var(--nav-bg)] shadow-sm">
           Conta criada. Agora faca login.
         </div>
       ) : null}
 
       {loggedOut ? (
-        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-zinc-200">
+        <div className="rounded-[12px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-sm text-[var(--nav-bg)] shadow-sm">
           Voce saiu da conta.
         </div>
       ) : null}
 
       {error ? (
-        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+        <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-sm text-[#7a0d32] shadow-sm">
           {error}
         </div>
       ) : null}
 
       {hasOauthError ? (
-        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+        <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-sm text-[#7a0d32] shadow-sm">
           Falha no login social. Tente novamente.
         </div>
       ) : null}
 
-      <div className="mt-5 grid gap-2">
+      <div className="grid gap-2">
         <button
           type="button"
           onClick={startGoogle}
           disabled={oauthLoading}
-          className="flex items-center justify-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex items-center justify-center gap-2 rounded-[12px] border border-[var(--field-border)] bg-white px-4 py-3 text-sm font-semibold text-[var(--nav-bg)] shadow-sm transition hover:bg-[var(--field-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {oauthLoading ? "Redirecionando..." : "Entrar com Google"}
         </button>
       </div>
 
-      <form onSubmit={onSubmit} className="mt-5 grid gap-3">
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
-          required
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Senha"
-          className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
-          required
-        />
+      <div className="relative py-2">
+        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--field-border)]" />
+        <span className="relative mx-auto block w-fit bg-white px-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#7c879f]">
+          ou use email
+        </span>
+      </div>
+
+      <form onSubmit={onSubmit} className="grid gap-3">
+        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)]">
+          <span>Email</span>
+          <input
+            name="email"
+            type="email"
+            placeholder="seuemail@email.com"
+            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
+            required
+          />
+        </label>
+
+        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)]">
+          <span>Senha</span>
+          <input
+            name="password"
+            type="password"
+            placeholder="Digite sua senha"
+            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
+            required
+          />
+        </label>
 
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-2 inline-flex items-center justify-center rounded-[12px] bg-[var(--cta-teal)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-md transition hover:bg-[var(--cta-teal-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {loading ? "Entrando..." : "Entrar"}
+          {loading ? "Entrando..." : "Entrar agora"}
         </button>
       </form>
 
-      <p className="mt-4 text-sm text-zinc-300">
-        Nao tem conta?{" "}
-        <Link className="text-emerald-300 hover:underline" href="/register">
-          Criar conta
+      <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+        <Link className="font-semibold text-[var(--link-blue)] hover:underline" href="/register">
+          Cadastre-se
         </Link>
-      </p>
+        <Link className="font-semibold text-[var(--link-blue)] hover:underline" href="/forgot-password">
+          Esqueci minha senha
+        </Link>
+      </div>
     </main>
   );
 }
