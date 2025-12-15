@@ -1,5 +1,10 @@
-import { supabaseServer } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+"use client";
+
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, Suspense, useMemo, useState } from "react";
+
+import { supabaseBrowser } from "@/lib/supabase/client";
 
 function safeNextPath(input: string | null): string {
   if (!input) return "/feed";
@@ -9,39 +14,51 @@ function safeNextPath(input: string | null): string {
   return input;
 }
 
-export const dynamic = "force-dynamic";
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<main className="p-6 text-sm text-zinc-300">Carregando...</main>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
 
-export default function LoginPage({
-  searchParams,
-}: {
-  searchParams?: { error?: string; registered?: string; next?: string; loggedOut?: string };
-}) {
-  const nextPath = safeNextPath(searchParams?.next ?? null);
-  const hasError = searchParams?.error === "1";
-  const registered = searchParams?.registered === "1";
-  const loggedOut = searchParams?.loggedOut === "1";
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const supabase = useMemo(() => supabaseBrowser(), []);
 
-  async function signIn(formData: FormData): Promise<void> {
-    "use server";
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
+  const registered = searchParams.get("registered") === "1";
+  const loggedOut = searchParams.get("loggedOut") === "1";
+  const nextPath = safeNextPath(searchParams.get("next"));
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+
+    const formData = new FormData(event.currentTarget);
     const email = String(formData.get("email") || "").trim();
-    const password = String(formData.get("password") || "").trim();
-    const next = safeNextPath(String(formData.get("next") || "/feed"));
+    const password = String(formData.get("password") || "");
 
     if (!email || !password) {
-      redirect(`/login?error=1&next=${encodeURIComponent(next)}`);
+      setError("Preencha email e senha.");
+      return;
     }
 
-    const supabase = await supabaseServer();
-
+    setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      redirect(`/login?error=1&next=${encodeURIComponent(next)}`);
+      setError(error.message || "Email ou senha invalidos (ou conta nao confirmada).");
+      setLoading(false);
+      return;
     }
 
-    redirect(next);
-  }
+    router.replace(nextPath);
+    router.refresh();
+  };
 
   return (
     <main>
@@ -60,15 +77,13 @@ export default function LoginPage({
         </div>
       ) : null}
 
-      {hasError ? (
+      {error ? (
         <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
-          Email ou senha invalidos (ou sua conta ainda nao foi confirmada por email, se a confirmacao estiver ligada).
+          {error}
         </div>
       ) : null}
 
-      <form action={signIn} className="mt-5 grid gap-3">
-        <input type="hidden" name="next" value={nextPath} />
-
+      <form onSubmit={onSubmit} className="mt-5 grid gap-3">
         <input
           name="email"
           type="email"
@@ -84,16 +99,20 @@ export default function LoginPage({
           required
         />
 
-        <button className="mt-2 rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400">
-          Entrar
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-2 rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {loading ? "Entrando..." : "Entrar"}
         </button>
       </form>
 
       <p className="mt-4 text-sm text-zinc-300">
         Nao tem conta?{" "}
-        <a className="text-emerald-300 hover:underline" href="/register">
+        <Link className="text-emerald-300 hover:underline" href="/register">
           Criar conta
-        </a>
+        </Link>
       </p>
     </main>
   );

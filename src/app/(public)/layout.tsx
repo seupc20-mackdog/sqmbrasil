@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+
+import { LogoutButton } from "@/components/LogoutButton";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export default async function PublicLayout({ children }: { children: ReactNode }) {
@@ -35,15 +37,7 @@ export default async function PublicLayout({ children }: { children: ReactNode }
                   Ir para o app
                 </Link>
 
-                <form action={async () => {
-                  "use server";
-                  const supabase = await supabaseServer();
-                  await supabase.auth.signOut();
-                }}>
-                  <button className="rounded-md border border-white/10 px-3 py-2 text-sm text-zinc-200 hover:bg-white/10">
-                    Sair
-                  </button>
-                </form>
+                <LogoutButton className="rounded-md border border-white/10 px-3 py-2 text-sm text-zinc-200 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70" />
               </>
             ) : (
               <>

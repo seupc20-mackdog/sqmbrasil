@@ -1,36 +1,56 @@
-import { supabaseServer } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+"use client";
 
-export default function RegisterPage({
-  searchParams,
-}: {
-  searchParams?: { error?: string; ok?: string };
-}) {
-  async function signUp(formData: FormData): Promise<void> {
-    "use server";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useMemo, useState } from "react";
 
+import { supabaseBrowser } from "@/lib/supabase/client";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const supabase = useMemo(() => supabaseBrowser(), []);
+
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setMessage(null);
+
+    const formData = new FormData(event.currentTarget);
     const username = String(formData.get("username") || "").trim();
     const email = String(formData.get("email") || "").trim();
-    const password = String(formData.get("password") || "").trim();
+    const password = String(formData.get("password") || "");
 
-    if (!username || !email || password.length < 6) redirect("/register?error=1");
+    if (!username || !email || password.length < 6) {
+      setError("Preencha os campos e use senha com pelo menos 6 caracteres.");
+      return;
+    }
 
-    const supabase = await supabaseServer();
-
-    const { error } = await supabase.auth.signUp({
+    setLoading(true);
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { username }, // fica no metadata do usuário
-      },
+      options: { data: { username } },
     });
 
-    if (error) redirect("/register?error=1");
+    if (error) {
+      setError(error.message || "Nao foi possivel criar sua conta. Verifique os dados e tente novamente.");
+      setLoading(false);
+      return;
+    }
 
-    redirect("/login?registered=1");
-  }
+    if (data.session) {
+      router.replace("/feed");
+      router.refresh();
+      return;
+    }
 
-  const hasError = searchParams?.error === "1";
+    setMessage("Conta criada! Verifique seu email para confirmar o cadastro.");
+    setLoading(false);
+  };
 
   return (
     <main>
@@ -39,16 +59,22 @@ export default function RegisterPage({
         Cadastre-se para curtir, comentar e participar da comunidade.
       </p>
 
-      {hasError ? (
+      {error ? (
         <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
-          Não foi possível criar sua conta. Verifique os dados e tente novamente.
+          {error}
         </div>
       ) : null}
 
-      <form action={signUp} className="mt-5 grid gap-3">
+      {message ? (
+        <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-200">
+          {message}
+        </div>
+      ) : null}
+
+      <form onSubmit={onSubmit} className="mt-5 grid gap-3">
         <input
           name="username"
-          placeholder="Nome de usuário"
+          placeholder="Nome de usuario"
           className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
           required
         />
@@ -62,19 +88,26 @@ export default function RegisterPage({
         <input
           name="password"
           type="password"
-          placeholder="Senha (mín. 6)"
+          placeholder="Senha (min. 6)"
           className="w-full rounded-md border border-white/10 bg-zinc-900 px-3 py-2 outline-none"
           required
           minLength={6}
         />
 
-        <button className="mt-2 rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400">
-          Criar conta
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-2 rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {loading ? "Criando..." : "Criar conta"}
         </button>
       </form>
 
       <p className="mt-4 text-sm text-zinc-300">
-        Já tem conta? <a className="text-emerald-300 hover:underline" href="/login">Entrar</a>
+        Ja tem conta?{" "}
+        <Link className="text-emerald-300 hover:underline" href="/login">
+          Entrar
+        </Link>
       </p>
     </main>
   );
