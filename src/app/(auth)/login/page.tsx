@@ -29,10 +29,30 @@ function LoginForm() {
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
 
   const registered = searchParams.get("registered") === "1";
   const loggedOut = searchParams.get("loggedOut") === "1";
   const nextPath = safeNextPath(searchParams.get("next"));
+  const hasOauthError = searchParams.get("error") === "oauth";
+
+  const startGoogle = async () => {
+    setError(null);
+    setOauthLoading(true);
+
+    const origin = window.location.origin;
+    const redirectTo = `${origin}/auth/callback${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""}`;
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+
+    if (error) {
+      setError(error.message || "Nao foi possivel iniciar o login com Google.");
+      setOauthLoading(false);
+    }
+  };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -82,6 +102,23 @@ function LoginForm() {
           {error}
         </div>
       ) : null}
+
+      {hasOauthError ? (
+        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+          Falha no login social. Tente novamente.
+        </div>
+      ) : null}
+
+      <div className="mt-5 grid gap-2">
+        <button
+          type="button"
+          onClick={startGoogle}
+          disabled={oauthLoading}
+          className="flex items-center justify-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {oauthLoading ? "Redirecionando..." : "Entrar com Google"}
+        </button>
+      </div>
 
       <form onSubmit={onSubmit} className="mt-5 grid gap-3">
         <input
