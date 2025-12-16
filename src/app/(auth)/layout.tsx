@@ -21,7 +21,10 @@ const authTokens: CssVarStyle = {
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-[#0A1324]" style={authTokens}>
-      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[1.05fr_1fr] lg:bg-[var(--nav-bg)] lg:text-white">
+      <div className="relative grid min-h-screen grid-cols-1 lg:grid-cols-[1.05fr_1fr] lg:bg-[var(--nav-bg)] lg:text-white">
+        <span className="pointer-events-none absolute right-4 top-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-pink)]">
+          AUTH_LAYOUT_V2
+        </span>
         <header className="flex items-center justify-between px-4 py-4 sm:px-6 lg:hidden">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-[18px] bg-[var(--soft-teal-bg)] text-sm font-semibold uppercase tracking-tight text-[var(--check-teal)] ring-1 ring-[var(--cta-teal)]">
