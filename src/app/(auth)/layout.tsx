@@ -1,9 +1,9 @@
-import type { CSSProperties, ReactNode } from "react";
+import type React, { ReactNode } from "react";
 import Link from "next/link";
 
 import { AuthButtons } from "@/components/AuthButtons";
 
-const authTokens: CSSProperties = {
+const authTokens = {
   "--nav-bg": "#0A1324",
   "--brand-pink": "#F5135A",
   "--brand-pink-hover": "#D80F4F",
@@ -14,7 +14,7 @@ const authTokens: CSSProperties = {
   "--link-blue": "#5F95C5",
   "--soft-teal-bg": "#DFF2F5",
   "--check-teal": "#168D90",
-};
+} as React.CSSProperties;
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
