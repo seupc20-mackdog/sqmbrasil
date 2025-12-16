@@ -49,7 +49,7 @@ function LoginForm() {
     });
 
     if (error) {
-      setError(error.message || "Nao foi possivel entrar com o Google. Tente novamente.");
+      setError(error.message || "Não foi possível entrar com o Google. Tente novamente.");
       setOauthLoading(false);
     }
   };
@@ -63,7 +63,7 @@ function LoginForm() {
     const password = String(formData.get("password") || "");
 
     if (!email || !password) {
-      setError("Preencha email e senha.");
+      setError("Preencha e-mail e senha.");
       return;
     }
 
@@ -71,7 +71,7 @@ function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError("Email ou senha invalidos. Tente novamente.");
+      setError("Email ou senha inválidos. Tente novamente.");
       setLoading(false);
       return;
     }
@@ -85,23 +85,24 @@ function LoginForm() {
       <header className="space-y-2">
         <div className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs font-semibold text-[var(--muted)] ring-1 ring-white/10">
           <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(123,244,223,0.8)]" />
-          Acesso seguro
+          SQM Brasil - Comunidade e Loja
         </div>
         <h1 className="text-3xl font-semibold leading-tight text-white">Entrar</h1>
         <p className="text-base text-[var(--muted)]">
-          Acesse sua conta para participar da comunidade e comprar na loja.
+          Bem-vindo ao SQM Brasil! Acesse sua conta para receber conteúdo sobre SQM, comentar, curtir e salvar
+          publicações, além de finalizar compras na loja e acompanhar seus pedidos.
         </p>
       </header>
 
       {registered ? (
         <div className="rounded-xl border border-white/10 bg-[var(--card)]/80 px-4 py-3 text-sm text-[var(--muted-strong)] shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-          Conta criada. Agora faca login.
+          Conta criada. Agora faça login.
         </div>
       ) : null}
 
       {loggedOut ? (
         <div className="rounded-xl border border-white/10 bg-[var(--card)]/80 px-4 py-3 text-sm text-[var(--muted-strong)] shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-          Voce saiu da conta.
+          Você saiu da conta.
         </div>
       ) : null}
 
@@ -113,7 +114,7 @@ function LoginForm() {
 
       {hasOauthError ? (
         <div className="rounded-xl border border-[#f1719c]/40 bg-[#2a0f1c] px-4 py-3 text-sm text-[#ffb5ca] shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-          Nao foi possivel entrar com o Google. Tente novamente.
+          Não foi possível entrar com o Google. Tente novamente.
         </div>
       ) : null}
 
@@ -141,7 +142,7 @@ function LoginForm() {
           <input
             name="email"
             type="email"
-            placeholder="voce@email.com"
+            placeholder="Seu email"
             className="w-full rounded-xl border border-white/10 bg-[#0f162c] px-4 py-3 text-base text-white outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]"
             required
           />
@@ -172,7 +173,7 @@ function LoginForm() {
           Criar conta
         </Link>
         <Link className="font-semibold text-[var(--muted-strong)] hover:underline" href="/">
-          Voltar para inicio
+          Voltar para a página inicial
         </Link>
       </div>
     </main>

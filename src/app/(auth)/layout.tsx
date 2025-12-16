@@ -41,11 +41,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <div className="relative mt-4 space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-[var(--muted-strong)] shadow-[0_10px_40px_rgba(2,6,15,0.4)]">
               <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_14px_rgba(123,244,223,0.9)]" />
-              Acesso seguro e rapido
+              Acesso seguro e rápido
             </div>
             <div className="space-y-3">
               <h1 className="text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                Comunidade e Loja para pessoas com Sensibilidade Quimica Multipla.
+                Comunidade e Loja para pessoas com Sensibilidade Química Múltipla (SQM).
               </h1>
               <p className="text-base text-[var(--muted)] sm:text-lg">
                 Participe das conversas, acompanhe novidades sobre bem-estar e encontre produtos selecionados para o dia a dia com SQM.
@@ -53,14 +53,14 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             </div>
 
             <div className="grid gap-3 rounded-2xl border border-white/10 bg-white/5 p-5 text-[var(--muted-strong)] shadow-[0_16px_40px_rgba(2,6,15,0.35)] sm:grid-cols-2 sm:gap-4">
-              <Benefit title="Comunidade" description="Publique, comente e curta conteudos." />
+              <Benefit title="Comunidade" description="Publique, comente e curta conteúdos." />
               <Benefit title="Loja" description="Produtos selecionados e checkout simples." />
-              <Benefit title="Conta segura" description="Autenticacao e sessao protegida." />
-              <Benefit title="Multi-dispositivo" description="Experiencia otimizada para desktop e mobile." />
+              <Benefit title="Conta segura" description="Autenticação e sessão protegida." />
+              <Benefit title="Multi-dispositivo" description="Experiência otimizada para desktop e mobile." />
             </div>
 
             <p className="text-xs text-[var(--muted)]">
-              Conteudo informativo; nao substitui orientacao profissional.
+              Conteúdo informativo; não substitui orientação profissional.
             </p>
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <div className="w-full max-w-[420px] rounded-2xl border border-white/8 bg-[var(--card)]/80 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.45)] backdrop-blur">
             <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
               <span className="rounded-full bg-white/5 px-3 py-1 font-semibold text-[var(--muted-strong)]">SQM Brasil</span>
-              <span className="rounded-full bg-white/5 px-3 py-1 font-semibold text-[var(--accent)]">Auth v1.0</span>
+              <span className="rounded-full bg-white/5 px-3 py-1 font-semibold text-[var(--accent)]">Acesso seguro</span>
             </div>
             <div className="mb-5 block lg:hidden">
               <AuthButtons layout="stacked" />

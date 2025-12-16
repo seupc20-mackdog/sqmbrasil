@@ -13,6 +13,26 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
+
+  const startGoogle = async () => {
+    setError(null);
+    setMessage(null);
+    setOauthLoading(true);
+
+    const origin = window.location.origin;
+    const redirectTo = `${origin}/auth/callback`;
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+
+    if (error) {
+      setError(error.message || "Não foi possível entrar com o Google. Tente novamente.");
+      setOauthLoading(false);
+    }
+  };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,7 +57,7 @@ export default function RegisterPage() {
     });
 
     if (error) {
-      setError(error.message || "Nao foi possivel criar sua conta. Verifique os dados e tente novamente.");
+      setError(error.message || "Não foi possível criar sua conta. Verifique os dados e tente novamente.");
       setLoading(false);
       return;
     }
@@ -48,7 +68,7 @@ export default function RegisterPage() {
       return;
     }
 
-    setMessage("Enviamos um email de confirmacao. Depois de confirmar, volte e faca login.");
+    setMessage("Conta criada! Verifique seu email para confirmar o cadastro e depois faça login.");
     setLoading(false);
   };
 
@@ -61,7 +81,7 @@ export default function RegisterPage() {
         </div>
         <h1 className="text-3xl font-semibold leading-tight text-white">Criar conta</h1>
         <p className="text-base text-[var(--muted)]">
-          Participe da comunidade e acompanhe produtos pensados para pessoas com SQM.
+          Crie sua conta para acessar conteúdos e produtos especializados para quem tem SQM.
         </p>
       </header>
 
@@ -77,12 +97,30 @@ export default function RegisterPage() {
         </div>
       ) : null}
 
+      <div className="grid gap-2">
+        <button
+          type="button"
+          onClick={startGoogle}
+          disabled={oauthLoading}
+          className="flex items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-3.5 text-sm font-semibold uppercase tracking-wide text-[#04101f] shadow-[0_14px_40px_rgba(123,244,223,0.35)] transition hover:bg-[var(--accent-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050915] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+        >
+          {oauthLoading ? "Redirecionando..." : "Criar conta com Google"}
+        </button>
+      </div>
+
+      <div className="relative py-2 sm:py-3">
+        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/10" />
+        <span className="relative mx-auto block w-fit rounded-full bg-[#0c1224] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--muted)] ring-1 ring-white/10">
+          ou use email
+        </span>
+      </div>
+
       <form onSubmit={onSubmit} className="grid gap-3 sm:gap-4">
         <label className="grid gap-1.5 text-sm font-semibold text-white sm:text-base">
-          <span>Nome de usuario</span>
+          <span>Nome</span>
           <input
             name="username"
-            placeholder="Como quer ser chamado"
+            placeholder="Seu nome"
             className="w-full rounded-xl border border-white/10 bg-[#0f162c] px-4 py-3 text-base text-white outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]"
             required
           />
@@ -93,7 +131,7 @@ export default function RegisterPage() {
           <input
             name="email"
             type="email"
-            placeholder="voce@email.com"
+            placeholder="Seu email"
             className="w-full rounded-xl border border-white/10 bg-[#0f162c] px-4 py-3 text-base text-white outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]"
             required
           />
@@ -104,7 +142,7 @@ export default function RegisterPage() {
           <input
             name="password"
             type="password"
-            placeholder="Minimo 6 caracteres"
+            placeholder="Sua senha (mínimo 6 caracteres)"
             className="w-full rounded-xl border border-white/10 bg-[#0f162c] px-4 py-3 text-base text-white outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]"
             required
             minLength={6}
@@ -121,7 +159,7 @@ export default function RegisterPage() {
       </form>
 
       <p className="text-sm text-[var(--muted)] sm:text-base">
-        Ja tenho conta.{" "}
+        Já tenho conta.{" "}
         <Link className="font-semibold text-[var(--accent)] hover:underline" href="/login">
           Fazer login
         </Link>
