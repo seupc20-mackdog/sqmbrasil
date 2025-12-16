@@ -49,7 +49,7 @@ function LoginForm() {
     });
 
     if (error) {
-      setError(error.message || "Não foi possível entrar com o Google. Tente novamente.");
+      setError(error.message || "Nao foi possivel entrar com o Google. Tente novamente.");
       setOauthLoading(false);
     }
   };
@@ -71,7 +71,7 @@ function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError("Email ou senha inválidos. Tente novamente.");
+      setError("Email ou senha invalidos. Tente novamente.");
       setLoading(false);
       return;
     }
@@ -81,36 +81,36 @@ function LoginForm() {
   };
 
   return (
-    <main className="space-y-6 text-[var(--nav-bg)]">
+    <main className="space-y-6 text-base text-[var(--nav-bg)] sm:space-y-8">
       <header className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--brand-pink)]">SQM Brasil</p>
-        <h1 className="text-3xl font-semibold leading-tight">Entrar</h1>
-        <p className="text-sm text-[#5a647a]">
-          Acesse publicações, comente, curta e salve conteúdos da comunidade. Finalize compras na loja e acompanhe seus pedidos.
+        <h1 className="text-2xl font-semibold leading-tight sm:text-3xl">Entrar</h1>
+        <p className="text-base text-[#5a647a] sm:text-lg">
+          Acesse publicacoes, comente, curta e salve conteudos da comunidade. Finalize compras na loja e acompanhe seus pedidos.
         </p>
       </header>
 
       {registered ? (
-        <div className="rounded-[12px] border border-[var(--check-teal)]/40 bg-[var(--soft-teal-bg)] px-4 py-3 text-sm text-[var(--nav-bg)] shadow-sm">
-          Conta criada. Agora faça login.
+        <div className="rounded-[12px] border border-[var(--check-teal)]/40 bg-[var(--soft-teal-bg)] px-4 py-3 text-base text-[var(--nav-bg)] shadow-sm">
+          Conta criada. Agora faca login.
         </div>
       ) : null}
 
       {loggedOut ? (
-        <div className="rounded-[12px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-sm text-[var(--nav-bg)] shadow-sm">
-          Você saiu da conta.
+        <div className="rounded-[12px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-base text-[var(--nav-bg)] shadow-sm">
+          Voce saiu da conta.
         </div>
       ) : null}
 
       {error ? (
-        <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-sm text-[#7a0d32] shadow-sm">
+        <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-base text-[#7a0d32] shadow-sm">
           {error}
         </div>
       ) : null}
 
       {hasOauthError ? (
-        <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-sm text-[#7a0d32] shadow-sm">
-          Não foi possível entrar com o Google. Tente novamente.
+        <div className="rounded-[12px] border border-[var(--brand-pink)]/40 bg-[#fff2f6] px-4 py-3 text-base text-[#7a0d32] shadow-sm">
+          Nao foi possivel entrar com o Google. Tente novamente.
         </div>
       ) : null}
 
@@ -119,38 +119,38 @@ function LoginForm() {
           type="button"
           onClick={startGoogle}
           disabled={oauthLoading}
-          className="flex items-center justify-center gap-2 rounded-[12px] border border-[var(--field-border)] bg-white px-4 py-3 text-sm font-semibold text-[var(--nav-bg)] shadow-sm transition hover:bg-[var(--field-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex items-center justify-center gap-2 rounded-[12px] border border-[var(--field-border)] bg-white px-4 py-3.5 text-base font-semibold text-[var(--nav-bg)] shadow-sm transition hover:bg-[var(--field-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {oauthLoading ? "Redirecionando..." : "Entrar com Google"}
         </button>
       </div>
 
-      <div className="relative py-2">
+      <div className="relative py-2 sm:py-3">
         <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--field-border)]" />
         <span className="relative mx-auto block w-fit bg-white px-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#7c879f]">
           ou use email
         </span>
       </div>
 
-      <form onSubmit={onSubmit} className="grid gap-3">
-        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)]">
+      <form onSubmit={onSubmit} className="grid gap-3 sm:gap-4">
+        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)] sm:text-base">
           <span>Email</span>
           <input
             name="email"
             type="email"
             placeholder="Seu email"
-            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
+            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-base text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
             required
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)]">
+        <label className="grid gap-1.5 text-sm font-semibold text-[var(--nav-bg)] sm:text-base">
           <span>Senha</span>
           <input
             name="password"
             type="password"
             placeholder="Sua senha"
-            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
+            className="w-full rounded-[10px] border border-[var(--field-border)] bg-[var(--field-bg)] px-4 py-3 text-base text-[var(--nav-bg)] outline-none placeholder:text-[#7b8496] focus:border-[var(--cta-teal)] focus:bg-white focus:ring-2 focus:ring-[var(--cta-teal)]"
             required
           />
         </label>
@@ -158,13 +158,13 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 inline-flex items-center justify-center rounded-[12px] bg-[var(--cta-teal)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-md transition hover:bg-[var(--cta-teal-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-2 inline-flex items-center justify-center rounded-[12px] bg-[var(--cta-teal)] px-4 py-3.5 text-sm font-semibold uppercase tracking-wide text-white shadow-md transition hover:bg-[var(--cta-teal-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
         >
           {loading ? "Entrando..." : "Entrar"}
         </button>
       </form>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+      <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between sm:text-base">
         <Link className="font-semibold text-[var(--link-blue)] hover:underline" href="/register">
           Criar conta
         </Link>
