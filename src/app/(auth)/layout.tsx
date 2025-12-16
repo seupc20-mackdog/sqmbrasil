@@ -1,109 +1,102 @@
-import type { ReactNode, CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 
 import { AuthButtons } from "@/components/AuthButtons";
 
 type CssVarStyle = CSSProperties & Record<`--${string}`, string>;
 
-const authTokens: CssVarStyle = {
-  "--nav-bg": "#0A1324",
-  "--brand-pink": "#F5135A",
-  "--brand-pink-hover": "#D80F4F",
-  "--cta-teal": "#98D2D4",
-  "--cta-teal-hover": "#86C7C9",
-  "--field-bg": "#F4F5F7",
-  "--field-border": "#CACFD3",
-  "--link-blue": "#5F95C5",
-  "--soft-teal-bg": "#DFF2F5",
-  "--check-teal": "#168D90",
+const tokens: CssVarStyle = {
+  "--bg-left": "linear-gradient(140deg, #050915 0%, #0d1529 45%, #0f1f37 100%)",
+  "--accent": "#7BF4DF",
+  "--accent-strong": "#45E0C1",
+  "--card": "#0c1224",
+  "--muted": "#9fb3d4",
+  "--muted-strong": "#dfe7f5",
 };
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-white text-[#0A1324]" style={authTokens}>
-      <div className="relative grid min-h-screen grid-cols-1 lg:grid-cols-[1.05fr_1fr] lg:bg-[var(--nav-bg)] lg:text-white">
-        <span className="pointer-events-none absolute right-4 top-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--brand-pink)]">
-          AUTH_LAYOUT_V2
-        </span>
-        <header className="flex items-center justify-between px-4 py-4 sm:px-6 lg:hidden">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[18px] bg-[var(--soft-teal-bg)] text-sm font-semibold uppercase tracking-tight text-[var(--check-teal)] ring-1 ring-[var(--cta-teal)]">
-              SQM
-            </div>
-            <div className="leading-tight">
-              <p className="text-sm font-semibold text-[var(--nav-bg)]">SQM Brasil - Comunidade e Loja</p>
-              <p className="text-xs text-[#5a647a]">Entre para participar da comunidade e acessar a loja.</p>
-            </div>
-          </Link>
+    <div className="min-h-screen bg-[#02060f] text-white" style={tokens}>
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+        <div className="relative flex flex-col gap-8 px-6 pb-12 pt-10 sm:px-10 lg:px-14 lg:pb-16 lg:pt-12">
+          <div className="absolute inset-0 bg-[var(--bg-left)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_25%,rgba(123,244,223,0.18),transparent_40%),radial-gradient(circle_at_85%_60%,rgba(69,224,193,0.18),transparent_38%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#050915]/60 to-transparent" />
 
-          <Link
-            href="/"
-            aria-label="Voltar para a pagina inicial"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--field-border)] text-[var(--nav-bg)] shadow-sm transition hover:bg-[var(--field-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cta-teal)]"
-          >
-            &#10005;
-          </Link>
-        </header>
-
-        <div className="relative hidden h-full flex-col justify-between overflow-hidden px-10 py-12 lg:flex">
-          <div className="absolute inset-0 -z-10 rounded-[28px] bg-[radial-gradient(circle_at_18%_20%,rgba(152,210,212,0.26),transparent_45%),radial-gradient(circle_at_82%_65%,rgba(245,19,90,0.22),transparent_42%)]" />
-          <div className="flex items-center justify-between">
+          <header className="relative flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-[18px] bg-[var(--soft-teal-bg)] text-sm font-semibold uppercase tracking-tight text-[var(--check-teal)] ring-1 ring-[var(--cta-teal)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-lg font-semibold uppercase tracking-tight text-[var(--accent)] ring-1 ring-white/10">
                 SQM
               </div>
-              <div>
-                <div className="text-lg font-semibold">SQM Brasil - Comunidade e Loja</div>
-                <div className="text-sm text-[#d8e3f5]">Entre para participar da comunidade e acessar a loja.</div>
+              <div className="leading-tight">
+                <p className="text-sm font-semibold text-white/90">SQM Brasil</p>
+                <p className="text-xs text-[var(--muted)]">Comunidade e Loja para SQM</p>
               </div>
             </Link>
+            <div className="hidden text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--accent)] sm:block">
+              AUTH_LAYOUT_V2
+            </div>
+          </header>
 
-            <div className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
+          <div className="relative mt-4 space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-[var(--muted-strong)] shadow-[0_10px_40px_rgba(2,6,15,0.4)]">
+              <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_14px_rgba(123,244,223,0.9)]" />
               Acesso seguro e rapido
             </div>
-          </div>
+            <div className="space-y-3">
+              <h1 className="text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                Comunidade e Loja para pessoas com Sensibilidade Quimica Multipla.
+              </h1>
+              <p className="text-base text-[var(--muted)] sm:text-lg">
+                Participe das conversas, acompanhe novidades sobre bem-estar e encontre produtos selecionados para o dia a dia com SQM.
+              </p>
+            </div>
 
-          <div className="mt-12 space-y-8 text-white">
-            <p className="text-3xl font-semibold leading-tight">
-              Acesse publicacoes, comente, curta e salve conteudos da comunidade. Finalize compras na loja com facilidade e acompanhe seus pedidos.
+            <div className="grid gap-3 rounded-2xl border border-white/10 bg-white/5 p-5 text-[var(--muted-strong)] shadow-[0_16px_40px_rgba(2,6,15,0.35)] sm:grid-cols-2 sm:gap-4">
+              <Benefit title="Comunidade" description="Publique, comente e curta conteudos." />
+              <Benefit title="Loja" description="Produtos selecionados e checkout simples." />
+              <Benefit title="Conta segura" description="Autenticacao e sessao protegida." />
+              <Benefit title="Multi-dispositivo" description="Experiencia otimizada para desktop e mobile." />
+            </div>
+
+            <p className="text-xs text-[var(--muted)]">
+              Conteudo informativo; nao substitui orientacao profissional.
             </p>
-            <ul className="space-y-4 text-sm text-[#d8e3f5]">
-              <li className="flex items-start gap-3">
-                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--check-teal)]" />
-                Login com Google ou email para entrar na sua conta.
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--check-teal)]" />
-                Sessao protegida com autenticacao e cookies seguros.
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--check-teal)]" />
-                Experiencia otimizada para desktop e mobile.
-              </li>
-            </ul>
           </div>
-
-          <p className="mt-10 text-xs text-[#a3b6d6]">
-            Conteudo informativo; nao substitui orientacao profissional.
-          </p>
         </div>
 
-        <div className="flex min-h-full flex-col bg-white px-4 pb-10 pt-2 sm:px-6 lg:ms-auto lg:me-10 lg:min-h-screen lg:justify-center lg:rounded-tl-[28px] lg:rounded-bl-[28px] lg:px-10 lg:pb-14 lg:pt-8">
-          <div className="mb-5 hidden justify-end lg:flex">
-            <AuthButtons />
-          </div>
-
-          <div className="mx-auto w-full max-w-[420px] rounded-2xl border border-[var(--field-border)] bg-white p-6 shadow-[0_16px_46px_rgba(10,19,36,0.14)] lg:shadow-[0_24px_60px_rgba(10,19,36,0.2)]">
-            <div className="mb-5 lg:hidden">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[#050915] px-4 pb-12 pt-10 sm:px-6 lg:px-12 lg:pb-16">
+          <div className="w-full max-w-[420px] rounded-2xl border border-white/8 bg-[var(--card)]/80 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.45)] backdrop-blur">
+            <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+              <span className="rounded-full bg-white/5 px-3 py-1 font-semibold text-[var(--muted-strong)]">SQM Brasil</span>
+              <span className="rounded-full bg-white/5 px-3 py-1 font-semibold text-[var(--accent)]">Auth v1.0</span>
+            </div>
+            <div className="mb-5 block lg:hidden">
               <AuthButtons layout="stacked" />
+            </div>
+            <div className="hidden lg:mb-6 lg:flex lg:justify-end">
+              <AuthButtons />
             </div>
             {children}
           </div>
 
-          <p className="mt-6 text-center text-xs text-[#5f6677] lg:text-start">
-            Conteudo informativo; nao substitui orientacao profissional.
+          <p className="mt-6 text-center text-xs text-[var(--muted)]">
+            Precisa de ajuda? <Link href="/shop" className="text-[var(--accent)] underline-offset-4 hover:underline">Explore a loja</Link> ou{" "}
+            <Link href="/feed" className="text-[var(--accent)] underline-offset-4 hover:underline">veja a comunidade</Link>.
           </p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function Benefit({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl bg-white/5 px-3.5 py-3 ring-1 ring-white/5">
+      <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_12px_rgba(123,244,223,0.9)]" />
+      <div className="space-y-1">
+        <p className="text-sm font-semibold text-white">{title}</p>
+        <p className="text-sm text-[var(--muted)]">{description}</p>
       </div>
     </div>
   );
